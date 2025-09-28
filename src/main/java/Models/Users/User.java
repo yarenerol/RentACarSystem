@@ -8,7 +8,7 @@ public class User {
     private String name;
     private String surname;
     private String email;
-    private String password;        //TODO: hashlenecek
+    private String password;
     private UserRoles userRole;
     private Integer age;
     private String companyName;
