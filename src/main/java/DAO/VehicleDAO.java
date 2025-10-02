@@ -39,28 +39,53 @@ public class VehicleDAO {
 
                 String vehicleTypeName = rs.getString("vehicle_type");
 
-                VehicleTypes type = null;
-                if (vehicleTypeName != null) {
-                    switch (vehicleTypeName) {
-                        case "Car": type = VehicleTypes.CAR; break;
-                        case "Motorcycle": type = VehicleTypes.MOTORCYCLE; break;
-                        case "Helicopter": type = VehicleTypes.HELICOPTER; break;
-                    }
+                VehicleTypes type = VehicleTypes.fromString(vehicleTypeName);
+
+                Vehicle v = null;
+                switch (type) {
+                    case CAR:
+                        v = new Car(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
+                        break;
+                    case MOTORCYCLE:
+                        v = new Motorcycle(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee")
+                        );
+                        break;
+                    case HELICOPTER:
+                        v = new Helicopter(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
+                        break;
                 }
 
-                Vehicle v = new Vehicle(
-                        rs.getString("brand"),
-                        rs.getString("model"),
-                        rs.getLong("vehicle_type_id"),
-                        rs.getString("vehicle_type")){};
-
-                v.setId(rs.getLong("id"));
-                v.setVehicleTypeId(rs.getLong("vehicle_type_id"));
-
-                vehicles.add(v);
+                if (v != null) {
+                    vehicles.add(v);
+                }
             }
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -92,7 +117,7 @@ public class VehicleDAO {
 
             ps.setString(1, vehicle.getBrand());
             ps.setString(2, vehicle.getModel());
-            ps.setString(3, String.valueOf(vehicle.getVehicleType()));
+            ps.setLong(3, vehicle.getVehicleTypeId());
             ps.setBigDecimal(4, vehicle.getPrice());
 
             ps.executeUpdate();
@@ -280,8 +305,13 @@ public class VehicleDAO {
                 vehicle.setId(rs.getLong("id"));
                 vehicle.setBrand(rs.getString("brand"));
                 vehicle.setModel(rs.getString("model"));
-                vehicle.setPrice(rs.getBigDecimal("price"));
                 vehicle.setVehicleTypeId(rs.getLong("vehicle_type_id"));
+                vehicle.setVehicleType(VehicleTypes.valueOf(rs.getString("vehicle_type").toUpperCase()));
+                vehicle.setPrice(rs.getBigDecimal("price"));
+                vehicle.setHourlyPrice(rs.getBigDecimal("hourly_rental_fee"));
+                vehicle.setDailyPrice(rs.getBigDecimal("daily_rental_fee"));
+                vehicle.setWeeklyPrice(rs.getBigDecimal("weekly_rental_fee"));
+                vehicle.setMonthlyPrice(rs.getBigDecimal("monthly_rental_fee"));
 
             }
 
@@ -291,4 +321,58 @@ public class VehicleDAO {
         return vehicle;
     }
 
+    public void updateVehicle(Vehicle v, String columnName, String update) {
+
+        try {
+            Connection connection = DBUtil.getConnection();
+
+            PreparedStatement ps = null;
+
+            if (columnName.equals("brand")) {
+                ps = connection.prepareStatement(SQLScripts.updateVehicleBrandScript);
+
+                ps.setString(1, update);
+                ps.setLong(2, v.getId());
+
+            }else if (columnName.equals("model")){
+                ps = connection.prepareStatement(SQLScripts.updateVehicleModelScript);
+
+                ps.setString(1, update);
+                ps.setLong(2, v.getId());
+
+            } else if (columnName.equals("price")) {
+                ps = connection.prepareStatement(SQLScripts.updateVehiclePriceScript);
+
+                ps.setBigDecimal(1, BigDecimal.valueOf(Long.parseLong(update)));
+                ps.setLong(2, v.getId());
+
+            } else if (columnName.equals("vehicle_type_id")) {
+                ps = connection.prepareStatement(SQLScripts.updateVehicleTypeIdScript);
+
+                ps.setLong(1, Long.parseLong(update));
+                ps.setLong(3, v.getId());
+            }
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteVehicle(long vehicleId) {
+
+        try {
+            Connection connection = DBUtil.getConnection();
+
+            PreparedStatement ps = connection.prepareStatement(SQLScripts.deleteVehicleScript);
+
+            ps.setLong(1, vehicleId);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

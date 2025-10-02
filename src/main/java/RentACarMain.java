@@ -1,8 +1,10 @@
 import DAO.UserDAO;
+import DAO.VehicleDAO;
 import Exceptions.RentACarException;
 import Models.Enums.RentalTypes;
 import Models.Enums.UserRoles;
 import Models.Enums.VehicleTypes;
+import Models.Order.Order;
 import Models.Users.User;
 import Models.Vehicles.Vehicle;
 import Service.OrderService;
@@ -11,7 +13,7 @@ import Service.VehicleService;
 import UI.Menus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -137,6 +139,12 @@ public class RentACarMain {
                     listAllVehicles();
                     break;
                 case "3":
+                    updateVehicle();
+                    break;
+                case "4":
+                    deleteVehicle();
+                    break;
+                case "5":
                     System.out.println("Log out...");
                     x = false;
                     break;
@@ -150,6 +158,78 @@ public class RentACarMain {
 
     }
 
+    private static void deleteVehicle() {
+
+        listAllVehicles();
+        System.out.println("--------------");
+        System.out.print("Please enter the id of the vehicle you would like to delete: ");
+        long vehicleId = input.nextLong();
+        input.nextLine();   //buffer
+
+        VehicleService.deleteVehicle(vehicleId);
+
+        System.out.println("The vehicle has been successfully deleted!");
+    }
+
+    private static void updateVehicle() {
+
+        listAllVehicles();
+        System.out.println("--------------");
+        System.out.print("Please enter the id of the vehicle you would like to update: ");
+        long vehicleId = input.nextLong();
+        input.nextLine();   //buffer
+
+        String update = null;
+        String columnName = null;
+
+        boolean x = true;
+        while (x) {
+            System.out.println("What data about the vehicle would you like to change?");
+            System.out.println("1. Brand");
+            System.out.println("2. Model");
+            System.out.println("3. Price");
+            System.out.println("4. Vehicle type");
+
+            String choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.print("Updated brand: ");
+                    update = input.nextLine();
+                    columnName = "brand";
+                    break;
+                case "2":
+                    System.out.print("Updated model: ");
+                    update = input.nextLine();
+                    columnName = "model";
+                    break;
+                case "3":
+                    System.out.print("Updated price: ");
+                    update = input.nextLine();
+                    columnName = "price";
+                    break;
+                case "4":
+                    System.out.println("= VEHICLE TYPE ID'S =");
+                    System.out.println("1. Car");
+                    System.out.println("2. Motorcycle");
+                    System.out.println("3. Helicopter");
+                    System.out.println("Updated vehicle type id: ");
+                    update = input.nextLine();
+                    columnName = "vehicle_type_id";
+                    break;
+                default:
+                    System.out.println("Invalid input!");
+
+            }
+            x = false;
+        }
+
+        VehicleService.updateVehicle(vehicleId, columnName, update);
+
+        System.out.println("The vehicle has been successfully updated!");
+
+    }
+
     private static void createVehicle() {
 
         System.out.println("Brand: ");
@@ -160,6 +240,7 @@ public class RentACarMain {
 
         System.out.println("Sale price: ");
         BigDecimal price = input.nextBigDecimal();
+        input.nextLine();   //buffer
 
         VehicleTypes vehicleType = null;
         do {
@@ -202,22 +283,23 @@ public class RentACarMain {
 
             System.out.println("=== VEHICLE LIST (Page " + page + "/" + totalPage + ") ===");
 
-            vehicles.forEach(vehicle ->{
+            for (Vehicle vehicle : vehicles) {
                 System.out.printf("%s - %s - %s - %s - %s%n",
                         vehicle.getId(),
                         vehicle.getBrand(),
                         vehicle.getModel(),
-                        vehicle.getVehicleType(),
-                        vehicle.getPrice());
-            });
+                        vehicle.getVehicleTypeId(),
+                        vehicle.getVehicleType());
+            }
 
-
+            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
             page = Integer.parseInt(pageStr);
 
             System.out.println("===========");
+
 
         }while(page<=totalPage);
 
@@ -290,13 +372,14 @@ public class RentACarMain {
                         vehicle.getPrice());
             });
 
-
+            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
             page = Integer.parseInt(pageStr);
 
             System.out.println("===========");
+
 
         }while(page<=totalPage);
 
@@ -329,7 +412,7 @@ public class RentACarMain {
                         vehicle.getPrice());
             });
 
-
+            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -369,7 +452,7 @@ public class RentACarMain {
                         vehicle.getPrice());
             });
 
-
+            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -377,10 +460,48 @@ public class RentACarMain {
 
             System.out.println("===========");
 
+
         }while(page<=totalPage);
 
     }
     private static void listAllRentals() {
+
+        System.out.print("Your e-mail: ");
+        String email = input.nextLine();
+
+        OrderService orderService = new OrderService();
+        int totalPage = orderService.getTotalPage();
+        int page = 1;
+
+        do{
+            List<Order> orders = OrderService.listAllRentals(page, email);
+
+            System.out.println("=== RENTAL LIST (Page " + page + "/" + totalPage + ") ===");
+
+            orders.forEach(order ->{
+                System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
+                        order.getOrderId(),
+                        order.getBrand(),
+                        order.getModel(),
+                        order.getStartDate(),
+                        order.getEndDate(),
+                        order.getStatus(),
+                        order.getDeposit(),
+                        order.getTotalAmount());
+
+            });
+
+            System.out.println("(To exit the list, please enter a number that is one more than the total number of pages.)");
+            System.out.println("Next page: ");
+
+            String pageStr = input.nextLine();
+            page = Integer.parseInt(pageStr);
+
+            System.out.println("===========");
+
+
+        }while(page<=totalPage);
+
 
     }
 
@@ -390,24 +511,31 @@ public class RentACarMain {
         System.out.print("Your email: ");
         String renterEmail = input.nextLine();
 
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDAO();                // Kiralayan için instance oluşturuyorum.
         User renterUser = userDAO.findByEmail(renterEmail);
+
 
         listAllVehicles();  // Şimdi araç listesini yazdırarak kullanıcının birini seçmesini isteyelim.
 
-        System.out.println(" ==============");
         System.out.print("ID of the car you would like to rent: ");
         long vehicleId = input.nextLong();
+        input.nextLine(); //Buffer
 
         System.out.println("Start date (dd-MM-yyyy HH:mm): ");
         String startDateInput = input.nextLine();
 
+        System.out.println("End date (dd-MM-yyyy HH:mm): ");
+        String endDateInput = input.nextLine();
+
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
 
         try {
             // String → LocalDateTime dönüşümü
             startDate = LocalDateTime.parse(startDateInput, formatter);
+            endDate = LocalDateTime.parse(startDateInput, formatter);
 
         } catch (Exception e) {
             System.out.println("Invalid format! Please use dd-MM-yyyy HH:mm (e.g., 2025-09-28 14:30)");
@@ -439,6 +567,7 @@ public class RentACarMain {
                     break;
                 case "4":
                     rentalType = RentalTypes.MONTHLY;
+                    break;
                 default:
                     System.out.println("Invalid input!");
                     continue;
@@ -453,11 +582,11 @@ public class RentACarMain {
         // Şimdi süre alıyoruz.
         System.out.println("Duration (" + rentalType + "):");
         int duration = input.nextInt();
+        input.nextLine();   //buffer
 
         OrderService orderService = new OrderService();
-        orderService.createRental(renterUser.getId(), renterUser, vehicleId, rentalType, startDate, duration, renterUser.getAge());
+        orderService.createRental(renterEmail, vehicleId, rentalType, startDate, endDate, duration, renterUser.getAge());
 
-        System.out.println("The vehicle has been successfully rented.");
     }
 
 

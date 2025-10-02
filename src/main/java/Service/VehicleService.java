@@ -19,12 +19,18 @@ public class VehicleService {
     }
 
     public static List<Vehicle> listAllVehicles(int page) {
-        List<Vehicle> vehicles = new ArrayList<>();     //fonksiyonun geri dönüşüne bu listeyi atamak için try-catch'İn dışında açıyorum.
+
+        List<Vehicle> vehicles = new ArrayList<>();
 
         vehicles = VehicleDAO.listAllVehicles(page);
 
         return vehicles;
 
+    }
+
+    public static void deleteVehicle(long vehicleId) {
+
+        vehicleDAO.deleteVehicle(vehicleId);
     }
 
     public int getTotalPage() {
@@ -39,14 +45,17 @@ public class VehicleService {
         switch (vehicleType) {
             case CAR -> {
                 vehicle = new Car(brand, model, vehicleType, price);
+                vehicle.setVehicleTypeId(Long.valueOf(1));
                 break;
             }
             case MOTORCYCLE -> {
                 vehicle = new Motorcycle(brand, model, vehicleType, price);
+                vehicle.setVehicleTypeId(Long.valueOf(2));
                 break;
             }
             case HELICOPTER -> {
                 vehicle = new Helicopter(brand, model, vehicleType, price);
+                vehicle.setVehicleTypeId(Long.valueOf(3));
                 break;
             }
             default -> System.out.println("Invalid vehicle type!");
@@ -77,6 +86,12 @@ public class VehicleService {
 
         return vehicles;
 
+    }
+
+    public static void updateVehicle(long vehicleId, String columnName, String update){
+
+        Vehicle v = vehicleDAO.findById(vehicleId);
+        vehicleDAO.updateVehicle (v, columnName, update);
     }
 }
 

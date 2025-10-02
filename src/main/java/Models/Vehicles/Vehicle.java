@@ -25,18 +25,13 @@ public abstract class Vehicle {
         this.price = price;
     }
 
-    public Vehicle(Long id, String brand, String model, BigDecimal price, VehicleTypes vehicleType) {
-        this.id = id;
-        this.brand = brand;
-        this.model = model;
-        this.price = price;
-        this.vehicleType = vehicleType;
-    }
-
     public Vehicle() {
     }
 
-    public Vehicle(String brand, String model, BigDecimal price) {
+    public Vehicle(long id, String brand, String model, long vehicleTypeId, VehicleTypes vehicleType) {
+    }
+
+    public Vehicle(String brand, String model) {
     }
 
 
@@ -102,5 +97,21 @@ public abstract class Vehicle {
 
     public BigDecimal getMonthlyPrice() {
         return monthlyPrice;
+    }
+
+    public void setHourlyPrice(BigDecimal hourlyPrice) {
+        this.hourlyPrice = hourlyPrice;
+    }
+
+    public void setDailyPrice(BigDecimal dailyPrice) {
+        this.dailyPrice = dailyPrice;
+    }
+
+    public void setWeeklyPrice(BigDecimal weeklyPrice) {
+        this.weeklyPrice = weeklyPrice;
+    }
+
+    public void setMonthlyPrice(BigDecimal monthlyPrice) {
+        this.monthlyPrice = monthlyPrice;
     }
 }

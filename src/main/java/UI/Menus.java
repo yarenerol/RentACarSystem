@@ -19,7 +19,9 @@ public class Menus {
         System.out.println("Welcome " + user.getName());
         System.out.println("1. Create new vehicle");
         System.out.println("2. List all vehicles");
-        System.out.println("3. Log out and back to main menu");
+        System.out.println("3. Update a vehicle");
+        System.out.println("4. Delete a vehicle");
+        System.out.println("5. Log out and back to main menu");
         System.out.println("0. Exit");
         System.out.println("Your choice: ");
 

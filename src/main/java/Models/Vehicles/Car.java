@@ -8,32 +8,57 @@ public class Car extends Vehicle{
 
     public Car(String brand, String model, VehicleTypes vehicleType, BigDecimal price) {
         super(brand, model, vehicleType, price);
-
+        this.hourlyPrice = BigDecimal.valueOf(100);
+        this.dailyPrice  = BigDecimal.valueOf(500);
+        this.weeklyPrice = BigDecimal.valueOf(3000);
+        this.monthlyPrice= BigDecimal.valueOf(10000);
     }
 
 
     public Car(String vehicleBrand, String vehicleModel, int vehicleTypeId, String vehicleType) {
-
+        this.hourlyPrice = BigDecimal.valueOf(100);
+        this.dailyPrice  = BigDecimal.valueOf(500);
+        this.weeklyPrice = BigDecimal.valueOf(3000);
+        this.monthlyPrice= BigDecimal.valueOf(10000);
     }
 
     public Car() {
+        this.hourlyPrice = BigDecimal.valueOf(100);
+        this.dailyPrice  = BigDecimal.valueOf(500);
+        this.weeklyPrice = BigDecimal.valueOf(3000);
+        this.monthlyPrice= BigDecimal.valueOf(10000);
+    }
+
+    public Car(long id, String brand, String model, long vehicleTypeId, VehicleTypes type) {
+        this.hourlyPrice = BigDecimal.valueOf(100);
+        this.dailyPrice  = BigDecimal.valueOf(500);
+        this.weeklyPrice = BigDecimal.valueOf(3000);
+        this.monthlyPrice= BigDecimal.valueOf(10000);
+    }
+
+    public Car(long id, String brand, String model, long vehicleTypeId, VehicleTypes vehicleType, BigDecimal hourlyRentalFee, BigDecimal dailyRentalFee, BigDecimal weeklyRentalFee, BigDecimal monthlyRentalFee) {
+        super(id, brand, model, vehicleTypeId, vehicleType);
+        this.hourlyPrice = hourlyRentalFee;
+        this.dailyPrice = dailyRentalFee;
+        this.weeklyPrice = weeklyRentalFee;
+        this.monthlyPrice = monthlyRentalFee;
 
     }
 
 
     public final BigDecimal getHourlyPrice() {
-        return BigDecimal.valueOf(100);
+        return hourlyPrice;
     }
 
     public final BigDecimal getDailyPrice() {
-        return BigDecimal.valueOf(500);
+        return dailyPrice;
     }
 
     public final BigDecimal getWeeklyPrice() {
-        return BigDecimal.valueOf(3000);
+        return weeklyPrice;
     }
 
     public final BigDecimal getMonthlyPrice() {
-        return BigDecimal.valueOf(10000);
+        return monthlyPrice;
     }
 }

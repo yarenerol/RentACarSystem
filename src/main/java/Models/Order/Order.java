@@ -4,6 +4,7 @@ import Models.Enums.RentalStatuses;
 import Models.Enums.RentalTypes;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -19,30 +20,35 @@ BigDecimal totalAmount;
 RentalStatuses status;
 LocalDateTime startDate;
 LocalDateTime endDate;
+String brand;
+String model;
 
-    public Order(long userId, long vehicleId, RentalTypes rentalType, int duration, LocalDateTime startDate, BigDecimal deposit, BigDecimal totalAmount, RentalStatuses status) {
+    public Order(long userId, long vehicleId, String brand, String model, RentalTypes rentalType, int duration, LocalDateTime startDate, LocalDateTime endDate, BigDecimal deposit, BigDecimal totalAmount, RentalStatuses status) {
         this.userId = userId;
         this.vehicleId = vehicleId;
+        this.brand = brand;
+        this.model = model;
         this.rentalType = rentalType;
         this.duration = duration;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.deposit = deposit;
         this.totalAmount = totalAmount;
         this.status = status;
         this.endDate = calculateEndDate(startDate, rentalType, duration);
     }
 
-    public Order(long orderId, long userId, long vehicleId, RentalTypes rentalType, int duration, BigDecimal deposit, BigDecimal totalAmount, RentalStatuses status, LocalDateTime startDate, LocalDateTime endDate) {
+
+    public Order(long orderId, String brand, String model, Timestamp startDate, Timestamp endDate, String status, BigDecimal deposit, BigDecimal totalPrice) {
         this.orderId = orderId;
-        this.userId = userId;
-        this.vehicleId = vehicleId;
-        this.rentalType = rentalType;
-        this.duration = duration;
+        this.brand = brand;
+        this.model = model;
+        this.startDate = startDate.toLocalDateTime();
+        this.endDate = endDate.toLocalDateTime();
+        this.status = RentalStatuses.valueOf(status);
         this.deposit = deposit;
-        this.totalAmount = totalAmount;
-        this.status = status;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.totalAmount =totalPrice;
+
     }
 
     private LocalDateTime calculateEndDate(LocalDateTime startDate, RentalTypes rentalType, int duration) {
@@ -140,5 +146,19 @@ LocalDateTime endDate;
         this.deposit = deposit;
     }
 
+    public String getBrand() {
+        return brand;
+    }
 
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
 }

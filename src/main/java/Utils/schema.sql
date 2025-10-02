@@ -1,0 +1,63 @@
+-- SQL COMMANDS USED TO CREATE TABLES
+
+-- ORDERS TABLE
+
+CREATE TABLE orders (
+order_id SERIAL PRIMARY KEY,
+user_id INTEGER REFERENCES users(id),
+vehicle_id INTEGER REFERENCES vehicles(id),
+total_price NUMERIC(10,2) NOT NULL,
+status VARCHAR(50) NOT NULL,
+deposit NUMERIC (10,2) NOT NULL,
+rental_type VARCHAR(50) NOT NULL,
+duration INTEGER NOT NULL,
+start_date TIMESTAMP NOT NULL,
+end_date TIMESTAMP NOT NULL
+);
+
+
+-- PAYMENT TABLE
+
+CREATE TABLE payment (
+payment_id SERIAL PRIMARY KEY,
+order_id INTEGER REFERENCES orders(order_id),
+amount NUMERIC(10,2) NOT NULL,
+deposit NUMERIC(10,2) NOT NULL,
+status VARCHAR(50) NOT NULL
+);
+
+
+-- USERS TABLE
+
+CREATE TABLE users (
+id SERIAL PRIMARY KEY,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+email VARCHAR(100) NOT NULL,
+passwrd VARCHAR(100) NOT NULL,
+user_role VARCHAR(10) NOT NULL,
+age INTEGER,
+company_name VARCHAR(100)
+);
+
+
+-- VEHICLE TYPE TABLE
+CREATE TABLE vehicle_type (
+id SERIAL PRIMARY KEY,
+vehicle_type VARCHAR (50) NOT NULL,
+hourly_rental_fee NUMERIC(10,2) NOT NULL,
+daily_rental_fee NUMERIC (10,2) NOT NULL,
+weekly_rental_fee NUMERIC (10,2) NOT NULL,
+monthly_rental_fee NUMERIC (10,2) NOT NULL;
+);
+
+
+-- VEHICLES TABLE
+
+CREATE TABLE vehicles (
+id SERIAL PRIMARY KEY,
+brand VARCHAR(100) NOT NULL,
+model VARCHAR (100) NOT NULL,
+price NUMERIC(10,2) NOT NULL,
+vehicle_type_id INTEGER NOT NULL
+);

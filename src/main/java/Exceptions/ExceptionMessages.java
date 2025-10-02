@@ -17,4 +17,5 @@ public class ExceptionMessages {
     public static final String INVALID_USERTYPE = "Invalid usertype!";
     public static final String INVALID_VEHICLE_TYPE = "Invalid vehicle type!";
     public static final String EMAIL_OR_PASSWORD_INCORRECT = "E-mail or password incorrect." ;
+    public static final String VEHICLE_IS_NOT_AVAILABLE = "This vehicle is not available on the dates you selected. Please select another time period.";
 }
