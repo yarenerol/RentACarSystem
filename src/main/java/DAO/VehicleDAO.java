@@ -139,51 +139,70 @@ public class VehicleDAO {
 
             int size = RentACarConstants.PAGE_SIZE;
             int offset = (page - 1) * size;
-            ps.setString(1, "%" + brandToSearch + "%");
-            ps.setInt(2, size);
+            ps.setString(1, brandToSearch);
+            ps.setInt(2, size );
             ps.setInt(3, offset);
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
+            while (rs.next()){
 
                 String vehicleTypeName = rs.getString("vehicle_type");
 
-                VehicleTypes type = null;
-                if (vehicleTypeName != null) {
-                    switch (vehicleTypeName) {
-                        case "Car":
-                            type = VehicleTypes.CAR;
-                            break;
-                        case "Motorcycle":
-                            type = VehicleTypes.MOTORCYCLE;
-                            break;
-                        case "Helicopter":
-                            type = VehicleTypes.HELICOPTER;
-                            break;
-                    }
+                VehicleTypes type = VehicleTypes.fromString(vehicleTypeName);
+
+                Vehicle v = null;
+                switch (type) {
+                    case CAR:
+                        v = new Car(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
+                        break;
+                    case MOTORCYCLE:
+                        v = new Motorcycle(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee")
+                        );
+                        break;
+                    case HELICOPTER:
+                        v = new Helicopter(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
+                        break;
                 }
 
-                Vehicle v = new Vehicle(
-                        rs.getString("brand"),
-                        rs.getString("model")) {
-                };
-                rs.getInt("vehicle_type_id");
-                rs.getString("vehicle_type");
-
-                v.setId(rs.getLong("id"));
-                v.setVehicleTypeId(rs.getLong("vehicle_type_id"));
-
-                vehicles.add(v);
+                if (v != null) {
+                    vehicles.add(v);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return vehicles;
     };
 
-    public static List<Vehicle> searchByVehicleType(int vehicleTypeToSearch, int page) {
+    public static List<Vehicle> searchByVehicleType(VehicleTypes type, int page) {
 
         List<Vehicle> vehicles = new ArrayList<>();
 
@@ -193,34 +212,59 @@ public class VehicleDAO {
 
             int size = RentACarConstants.PAGE_SIZE;
             int offset = (page - 1) * size;
-            ps.setInt(1, vehicleTypeToSearch);
+            ps.setInt(1, type.ordinal());
             ps.setInt(2, size);
             ps.setInt(3, offset);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String vehicleBrand = rs.getString("brand");
-                String vehicleModel = rs.getString("model");
-                int vehicleTypeId = rs.getInt("vehicle_type_id");
-                String vehicleType = rs.getString("vehicle_type");
 
-                switch (vehicleTypeId) {
-                    case 1:
-                        Car c = new Car(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(c);
+                Vehicle v = null;
+                switch (type) {
+                    case CAR:
+                        v = new Car(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
                         break;
-
-                    case 2:
-                        Motorcycle m = new Motorcycle(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(m);
+                    case MOTORCYCLE:
+                        v = new Motorcycle(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee")
+                        );
                         break;
-
-                    case 3:
-                        Helicopter h = new Helicopter(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(h);
+                    case HELICOPTER:
+                        v = new Helicopter(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
                         break;
                 }
+
+                if (v != null) {
+                    vehicles.add(v);
+                }
             }
+
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -245,27 +289,55 @@ public class VehicleDAO {
             ps.setInt(4, offset);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                String vehicleBrand = rs.getString("brand");
-                String vehicleModel = rs.getString("model");
-                int vehicleTypeId = rs.getInt("vehicle_type_id");
-                String vehicleType = rs.getString("vehicle_type");
+            while (rs.next()){
 
-                switch (vehicleTypeId) {
-                    case 1:
-                        Car c = new Car(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(c);
-                        break;
+                String vehicleTypeName = rs.getString("vehicle_type");
 
-                    case 2:
-                        Motorcycle m = new Motorcycle(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(m);
-                        break;
+                VehicleTypes type = VehicleTypes.fromString(vehicleTypeName);
 
-                    case 3:
-                        Helicopter h = new Helicopter(vehicleBrand, vehicleModel, vehicleTypeId, vehicleType);
-                        vehicles.add(h);
+                Vehicle v = null;
+                switch (type) {
+                    case CAR:
+                        v = new Car(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
                         break;
+                    case MOTORCYCLE:
+                        v = new Motorcycle(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee")
+                        );
+                        break;
+                    case HELICOPTER:
+                        v = new Helicopter(
+                                rs.getLong("id"),
+                                rs.getString("brand"),
+                                rs.getString("model"),
+                                rs.getLong("vehicle_type_id"),
+                                type,
+                                rs.getBigDecimal("hourly_rental_fee"),
+                                rs.getBigDecimal("daily_rental_fee"),
+                                rs.getBigDecimal("weekly_rental_fee"),
+                                rs.getBigDecimal("monthly_rental_fee"));
+                        break;
+                }
+
+                if (v != null) {
+                    vehicles.add(v);
                 }
             }
         } catch (SQLException ex) {

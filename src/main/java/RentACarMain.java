@@ -292,7 +292,7 @@ public class RentACarMain {
                         vehicle.getVehicleType());
             }
 
-            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
+            System.out.println("(To exit the list, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -362,17 +362,22 @@ public class RentACarMain {
             List<Vehicle> vehicles = VehicleService.searchByBrand(brandToSearch, page);
 
             System.out.println("=== VEHICLE LIST (Page " + page + "/" + totalPage + ") ===");
+            System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
+            "ID", "Brand", "Model", "Vehicle Type", "Hourly Price", "Daily Price", "Weekly Price", "Monthly Price");
 
             vehicles.forEach(vehicle ->{
-                System.out.printf("%s - %s - %s - %s - %s%n",
+                System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
                         vehicle.getId(),
                         vehicle.getBrand(),
                         vehicle.getModel(),
                         vehicle.getVehicleType(),
-                        vehicle.getPrice());
+                        vehicle.getHourlyPrice(),
+                        vehicle.getDailyPrice(),
+                        vehicle.getWeeklyPrice(),
+                        vehicle.getMonthlyPrice());
             });
 
-            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
+            System.out.println("(To exit the list, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -402,17 +407,22 @@ public class RentACarMain {
             List<Vehicle> vehicles = VehicleService.searchByVehicleType(vehicleTypeToSearch, page);
 
             System.out.println("=== VEHICLE LIST (Page " + page + "/" + totalPage + ") ===");
+            System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
+                    "ID", "Brand", "Model", "Vehicle Type", "Hourly Price", "Daily Price", "Weekly Price", "Monthly Price");
 
             vehicles.forEach(vehicle ->{
-                System.out.printf("%s - %s - %s - %s - %s%n",
+                System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
                         vehicle.getId(),
                         vehicle.getBrand(),
                         vehicle.getModel(),
                         vehicle.getVehicleType(),
-                        vehicle.getPrice());
+                        vehicle.getHourlyPrice(),
+                        vehicle.getDailyPrice(),
+                        vehicle.getWeeklyPrice(),
+                        vehicle.getMonthlyPrice());
             });
 
-            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
+            System.out.println("(To exit the list, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -442,17 +452,22 @@ public class RentACarMain {
             List<Vehicle> vehicles = VehicleService.searchByPriceRange(minPrice, maxPrice, page);
 
             System.out.println("=== VEHICLE LIST (Page " + page + "/" + totalPage + ") ===");
+            System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
+                    "ID", "Brand", "Model", "Vehicle Type", "Hourly Price", "Daily Price", "Weekly Price", "Monthly Price");
 
             vehicles.forEach(vehicle ->{
-                System.out.printf("%s - %s - %s - %s - %s%n",
+                System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
                         vehicle.getId(),
                         vehicle.getBrand(),
                         vehicle.getModel(),
                         vehicle.getVehicleType(),
-                        vehicle.getPrice());
+                        vehicle.getHourlyPrice(),
+                        vehicle.getDailyPrice(),
+                        vehicle.getWeeklyPrice(),
+                        vehicle.getMonthlyPrice());
             });
 
-            System.out.println("(To exit the list and make a selection, please enter a number that is one more than the total number of pages.)");
+            System.out.println("(To exit the list, please enter a number that is one more than the total number of pages.)");
             System.out.println("Next page: ");
 
             String pageStr = input.nextLine();
@@ -477,6 +492,8 @@ public class RentACarMain {
             List<Order> orders = OrderService.listAllRentals(page, email);
 
             System.out.println("=== RENTAL LIST (Page " + page + "/" + totalPage + ") ===");
+            System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",
+            "ID", "Brand", "Model", "Start Date", "End Date", "Status", "Deposit", "Total Amount");
 
             orders.forEach(order ->{
                 System.out.printf("%s - %s - %s - %s - %s - %s - %s - %s%n",

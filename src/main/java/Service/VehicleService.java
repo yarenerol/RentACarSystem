@@ -74,7 +74,20 @@ public class VehicleService {
     public static List<Vehicle> searchByVehicleType(int vehicleTypeToSearch, int page) {
 
         List<Vehicle> vehicles = new ArrayList<>();
-        vehicles = vehicleDAO.searchByVehicleType(vehicleTypeToSearch, page);
+
+        VehicleTypes type = null;
+
+        switch (vehicleTypeToSearch){
+            case 1:
+                type = VehicleTypes.CAR;
+            case 2:
+                type = VehicleTypes.MOTORCYCLE;
+            case 3:
+                type = VehicleTypes.HELICOPTER;
+        }
+
+
+        vehicles = vehicleDAO.searchByVehicleType(type, page);
 
         return vehicles;
     }

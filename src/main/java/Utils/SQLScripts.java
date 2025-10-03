@@ -34,7 +34,7 @@ public static final String listAllVehiclesScript = """
         
             FROM vehicles v
             JOIN vehicle_type vt ON v.vehicle_type_id = vt.id
-            ORDER BY id ASC
+            ORDER BY v.id ASC
             LIMIT ? OFFSET ?;
         
         """;
@@ -65,7 +65,7 @@ public static final String searchByBrandScript = """
         
             FROM vehicles v
             JOIN vehicle_type vt ON v.vehicle_type_id = vt.id
-            WHERE brand ILIKE ?
+            WHERE v.brand ILIKE ?
             ORDER BY id ASC
             LIMIT ? OFFSET ?;
         

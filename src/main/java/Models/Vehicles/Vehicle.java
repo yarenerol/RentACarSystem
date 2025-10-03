@@ -29,9 +29,23 @@ public abstract class Vehicle {
     }
 
     public Vehicle(long id, String brand, String model, long vehicleTypeId, VehicleTypes vehicleType) {
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        this.vehicleTypeId = vehicleTypeId;
+        this.vehicleType = vehicleType;
     }
 
     public Vehicle(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    public Vehicle(String brand, String model, long vehicleTypeId, VehicleTypes type) {
+        this.brand = brand;
+        this.model = model;
+        this.vehicleTypeId = vehicleTypeId;
+        this.vehicleType = type;
     }
 
 
